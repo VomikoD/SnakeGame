@@ -19,6 +19,7 @@ public class Settings {
     public static final int GAME_WIDTH = getDimension().width / CELL_SIZE + 1;
     public static final int GAME_HEIGHT = getDimension().height / CELL_SIZE;
     public static final String GAME_TITLE = properties.getProperty("GAME_TITLE");
+    public static final int DELAY_TIME_MILLIS = Integer.parseInt(properties.getProperty("DELAY_TIME_MILLIS"));
 
     // graphics settings
     public static final Color GAME_BACKGROUND = getColor(properties.getProperty("GAME_BACKGROUND"));

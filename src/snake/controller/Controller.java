@@ -5,6 +5,7 @@ import snake.model.Direction;
 import snake.model.Model;
 import snake.model.exception.UnknownPositionException;
 import snake.model.gameObjects.GameObject;
+import snake.special.Settings;
 import snake.view.View;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class Controller implements EventListener {
             model.step();
             view.update();
             try {
-                Thread.sleep(300);
+                Thread.sleep(Settings.DELAY_TIME_MILLIS);
             } catch (InterruptedException interruptedException) {
                 interruptedException.printStackTrace();
             }
