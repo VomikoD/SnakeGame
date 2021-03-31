@@ -1,4 +1,4 @@
-### **VMK_Snake_1.0**
+### **VMK_Snake_1.1**
 The levels.txt file stores levels. Format:
 
 Level: 'current level'\
