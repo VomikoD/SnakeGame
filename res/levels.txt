@@ -30,8 +30,8 @@ _______________________
 Level: 2
 StartDirection: DOWN
 Goal: 6
-Width = 30
-Height = 18
+Width: 30
+Height: 18
 IsAddRandomApple
 
 HHHHHHHHHHHHHHHHHHHHH
