@@ -1,4 +1,4 @@
-### **Java.swing_Snake1.1**
+### **Java.swing_Snake_1.1**
 The levels.txt file stores levels. Format:
 
 Level: 'current level'\
