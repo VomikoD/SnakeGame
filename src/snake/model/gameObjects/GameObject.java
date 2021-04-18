@@ -1,8 +1,9 @@
 package snake.model.gameObjects;
 
+import javafx.scene.Node;
 import snake.model.Position;
 
-import java.awt.*;
+import java.util.*;
 
 public class GameObject {
     private Position pos;
@@ -15,5 +16,7 @@ public class GameObject {
         return pos;
     }
 
-    public void draw(Graphics graphics) {}
+    public List<Node> getDrawElements() {
+        return Collections.emptyList();
+    }
 }

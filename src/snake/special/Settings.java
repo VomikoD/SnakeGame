@@ -1,5 +1,7 @@
 package snake.special;
 
+import javafx.scene.paint.Color;
+
 import java.awt.*;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,33 +17,48 @@ public class Settings {
         }
     }
     // game settings
-    public static final int CELL_SIZE = Integer.parseInt(properties.getProperty("CELL_SIZE"));
-    public static final int GAME_WIDTH = getDimension().width / CELL_SIZE + 1;
-    public static final int GAME_HEIGHT = getDimension().height / CELL_SIZE;
-    public static final String GAME_TITLE = properties.getProperty("GAME_TITLE");
-    public static final int DELAY_TIME_MILLIS = Integer.parseInt(properties.getProperty("DELAY_TIME_MILLIS"));
+    public static final int
+    CELL_SIZE                = Integer.parseInt(getProperty("CELL_SIZE")),
+    GAME_WIDTH               = getDimension().width / CELL_SIZE + 1,
+    GAME_HEIGHT              = getDimension().height / CELL_SIZE,
+    DELAY_TIME_MILLIS        = Integer.parseInt(getProperty("DELAY_TIME_MILLIS"));
+    public static final String GAME_TITLE = getProperty("GAME_TITLE");
 
     // graphics settings
-    public static final Color GAME_BACKGROUND = getColor(properties.getProperty("GAME_BACKGROUND"));
-    public static final Color COLOR_GAME_OVER_TEXT = getColor(properties.getProperty("COLOR_GAME_OVER_TEXT"));
-    public static final Color COLOR_GAME_WIN_TEXT = getColor(properties.getProperty("COLOR_GAME_WIN_TEXT"));
-    public static final Color COLOR_WALL = getColor(properties.getProperty("COLOR_WALL"));
-    public static final Color COLOR_MINE = getColor(properties.getProperty("MINE_COLOR"));
-    public static final Color APPLE_COLOR = getColor(properties.getProperty("APPLE_COLOR"));
-    public static final Color COLOR_DEAD_SNAKE = getColor(properties.getProperty("COLOR_DEAD_SNAKE"));
-    public static final Color BOTTOM_LETTERING_COLOR = getColor(properties.getProperty("BOTTOM_LETTERING_COLOR"));
+    public static final Color
+    GAME_BACKGROUND          = getColorProperty("GAME_BACKGROUND"),
+    COLOR_GAME_OVER_TEXT     = getColorProperty("COLOR_GAME_OVER_TEXT"),
+    COLOR_GAME_WIN_TEXT      = getColorProperty("COLOR_GAME_WIN_TEXT"),
+    COLOR_WALL               = getColorProperty("COLOR_WALL"),
+    COLOR_APPLE              = getColorProperty("APPLE_COLOR"),
+    BOTTOM_LETTERING_COLOR   = getColorProperty("BOTTOM_LETTERING_COLOR"),
+    COLOR_BODY_SNAKE         = getColorProperty("COLOR_BODY_SNAKE"),
+    COLOR_HEAD_SNAKE         = getColorProperty("COLOR_HEAD_SNAKE"),
+    COLOR_BODY_DEAD_SNAKE    = getColorProperty("COLOR_BODY_DEAD_SNAKE"),
+    COLOR_HEAD_DEAD_SNAKE    = getColorProperty("COLOR_HEAD_DEAD_SNAKE");
+
+    // interface settings
+    public static final String PATH_TO_INTERFACE = getProperty("PATH_TO_INTERFACE");
 
     // levels settings
-    public static final int COUNT_LEVELS = Integer.parseInt(properties.getProperty("COUNT_LEVELS"));
-    public static final String PATH_TO_LEVELS = properties.getProperty("PATH_TO_LEVELS");
+    public static final int COUNT_LEVELS = Integer.parseInt(getProperty("COUNT_LEVELS"));
+    public static final String PATH_TO_LEVELS = getProperty("PATH_TO_LEVELS");
+
+    private static String getProperty(String property) {
+        return properties.getProperty(property);
+    }
+
+    private static Color getColorProperty(String property) {
+        return getColor(getProperty(property));
+    }
 
     private static Color getColor(String colorString) {
-        int color = (int)Long.parseLong(colorString, 16);
-        int r = (color >> 16) & 0xFF;
-        int g = (color >> 8) & 0xFF;
-        int b = (color >> 0) & 0xFF;
+        int color = (int)Long.parseLong(colorString, 16),
+            r     = (color >> 16) & 0xFF,
+            g     = (color >> 8) & 0xFF,
+            b     = color & 0xFF;
 
-        return new Color(r, g, b);
+        return Color.rgb(r, g, b);
     }
 
     private static Dimension getDimension() {

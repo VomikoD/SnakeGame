@@ -1,30 +1,40 @@
 package snake.model.gameObjects;
 
+import javafx.scene.Node;
+import javafx.scene.paint.*;
+import javafx.scene.shape.Sphere;
 import snake.model.Position;
 import snake.model.exception.UnknownPositionException;
 import snake.model.level.Level;
-import snake.special.Settings;
-import snake.special.Special;
+import snake.special.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import java.awt.*;
+import java.util.*;
 
 public class Apple extends GameObject {
-    private static Object object = new Object();
-
     public Apple(Position pos) {
         super(pos);
     }
 
     @Override
-    public void draw(Graphics graphics) {
-        graphics.setColor(Settings.APPLE_COLOR);
+    public List<Node> getDrawElements() {
+        Sphere sphere = new Sphere(Settings.CELL_SIZE / 2);
+        sphere.setTranslateX(pos().getX() * Settings.CELL_SIZE);
+        sphere.setTranslateY(pos().getY() * Settings.CELL_SIZE);
+        sphere.setTranslateZ(10);
+        PhongMaterial material = new PhongMaterial();
+//        Color diffuseColor = Settings.COLOR_APPLE;
+//        diffuseColor = Color.rgb((int) diffuseColor.getRed(), (int) diffuseColor.getGreen(), 255);
+        material.setDiffuseColor(Settings.COLOR_APPLE);
+        material.setSpecularColor(Settings.COLOR_APPLE);
+        sphere.setMaterial(material);
+        return Collections.singletonList(sphere);
 
-        graphics.fillOval(pos().getX() * Settings.CELL_SIZE,
-                          pos().getY() * Settings.CELL_SIZE,
-                            Settings.CELL_SIZE, Settings.CELL_SIZE);
+//        Circle apple = new Circle(pos().getX() * Settings.CELL_SIZE,
+//                                  pos().getY() * Settings.CELL_SIZE,
+//                                         Settings.CELL_SIZE / 2);
+
+//        apple.setFill(Settings.COLOR_APPLE);
+//        return Collections.singletonList(apple);
     }
 
     public static Apple getNewApple(Level level) throws UnknownPositionException, InterruptedException {

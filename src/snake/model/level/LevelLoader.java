@@ -22,7 +22,6 @@ public class LevelLoader {
     public Level loadLevel(int level) {
         List<Apple> apples = new ArrayList<>();
         List<Wall> walls = new ArrayList<>();
-        List<Mine> mines = new ArrayList<>();
         Snake snake = null;
         int goal = 15;
         boolean isAddRandomApple = false;
@@ -100,9 +99,6 @@ public class LevelLoader {
                                 case '$':
                                     apples.add(new Apple(Position.position(x, y)));
                                     break;
-                                case 'a':
-                                    mines.add(new Mine(Position.position(x, y)));
-                                    break;
                             }
                             x++;
                         }
@@ -115,6 +111,6 @@ public class LevelLoader {
             e.printStackTrace();
         }
 
-        return new Level(loopLevel, new GameObjects(walls, apples, mines, snake), goal, isAddRandomApple, width, height);
+        return new Level(loopLevel, new GameObjects(walls, apples, snake), goal, isAddRandomApple, width, height);
     }
 }

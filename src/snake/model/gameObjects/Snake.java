@@ -1,12 +1,15 @@
 package snake.model.gameObjects;
 
+import javafx.scene.Node;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.Sphere;
 import snake.model.Direction;
 import snake.model.Position;
 import snake.model.exception.UnknownPositionException;
 import snake.model.level.Level;
 import snake.special.Settings;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,18 +56,7 @@ public class Snake extends GameObject {
     public int move(Level level) throws UnknownPositionException {
         List<Apple> apples = level.getGameObjects().getApples();
         List<Wall> walls = level.getGameObjects().getWalls();
-        List<Mine> mines = level.getGameObjects().getMines();
         GameObject newHead = createNewHead();
-
-        for(int i = 0; i < mines.size(); i++) {
-            Mine mine = mines.get(i);
-
-            assert newHead != null;
-            if(newHead.pos().equals(mine.pos())) {
-                isAlive = false;
-                return -1;
-            }
-        }
 
         for(int i = 0; i < walls.size(); i++) {
             Wall wall = walls.get(i);
@@ -105,25 +97,64 @@ public class Snake extends GameObject {
     }
 
     @Override
-    public void draw(Graphics graphics) {
+    public List<Node> getDrawElements() {
+        List<Node> parts = new ArrayList<>();
+        Color color;
         if(isAlive) {
-            graphics.setColor(Color.BLUE);
+            color = Settings.COLOR_HEAD_SNAKE;
         } else {
-            graphics.setColor(Settings.COLOR_DEAD_SNAKE);
+            color = Settings.COLOR_HEAD_DEAD_SNAKE;
         }
-        graphics.fillOval(snakeParts.get(0).pos().getX() * Settings.CELL_SIZE,
-                snakeParts.get(0).pos().getY() * Settings.CELL_SIZE,
-                Settings.CELL_SIZE, Settings.CELL_SIZE);
+
+        Sphere head = new Sphere(Settings.CELL_SIZE / 2);
+        head.setTranslateX(snakeParts.get(0).pos().getX() * Settings.CELL_SIZE);
+        head.setTranslateY(snakeParts.get(0).pos().getY() * Settings.CELL_SIZE);
+        head.setTranslateZ(10);
+        PhongMaterial materialHead = new PhongMaterial();
+//            Color diffuseColorBody = color;
+//            diffuseColorBody = Color.rgb((int) diffuseColorBody.getRed(), (int) diffuseColorBody.getGreen(), 255);
+        materialHead.setDiffuseColor(color);
+        materialHead.setSpecularColor(color);
+        head.setMaterial(materialHead);
+        parts.add(head);
+//        Sphere head = new Sphere(Settings.CELL_SIZE / 2);
+//        head.setTranslateX(snakeParts.get(0).pos().getX() * Settings.CELL_SIZE);
+//        head.setTranslateY(snakeParts.get(0).pos().getY() * Settings.CELL_SIZE);
+//        head.setTranslateZ(10);
+//        PhongMaterial materialHead = new PhongMaterial();
+////        Color diffuseColorHead = color;
+////        diffuseColorHead = Color.rgb((int) diffuseColorHead.getRed(), (int) diffuseColorHead.getGreen(), 255);
+//        materialHead.setDiffuseColor(color);
+//        materialHead.setSpecularColor(color);
+//        head.setMaterial(materialHead);
+//        parts.add(head);
+//        parts.add(new Circle(snakeParts.get(0).pos().getX() * Settings.CELL_SIZE,
+//                             snakeParts.get(0).pos().getY() * Settings.CELL_SIZE,
+//                                    Settings.CELL_SIZE / 2, color));
+
         if(isAlive) {
-            graphics.setColor(Color.ORANGE);
+            color = Settings.COLOR_BODY_SNAKE;
         } else {
-            graphics.setColor(Settings.COLOR_DEAD_SNAKE);
+            color = Settings.COLOR_BODY_DEAD_SNAKE;
         }
         for(int i = 1; i < snakeParts.size(); i++) {
-            graphics.fillOval(snakeParts.get(i).pos().getX() * Settings.CELL_SIZE,
-                              snakeParts.get(i).pos().getY() * Settings.CELL_SIZE,
-                                Settings.CELL_SIZE, Settings.CELL_SIZE);
+            Sphere bodyElement = new Sphere(Settings.CELL_SIZE / 2);
+            bodyElement.setTranslateX(snakeParts.get(i).pos().getX() * Settings.CELL_SIZE);
+            bodyElement.setTranslateY(snakeParts.get(i).pos().getY() * Settings.CELL_SIZE);
+            bodyElement.setTranslateZ(10);
+            PhongMaterial material = new PhongMaterial();
+//            Color diffuseColorBody = color;
+//            diffuseColorBody = Color.rgb((int) diffuseColorBody.getRed(), (int) diffuseColorBody.getGreen(), 255);
+            material.setDiffuseColor(color);
+            material.setSpecularColor(color);
+            bodyElement.setMaterial(material);
+            parts.add(bodyElement);
+//            parts.add(new Circle(snakeParts.get(i).pos().getX() * Settings.CELL_SIZE,
+//                                 snakeParts.get(i).pos().getY() * Settings.CELL_SIZE,
+//                                        Settings.CELL_SIZE / 2, color));
         }
+
+        return parts;
     }
 
     public Direction getDirection() {
@@ -134,7 +165,4 @@ public class Snake extends GameObject {
         return snakeParts.size();
     }
 
-    public List<GameObject> getSnakeParts() {
-        return snakeParts;
-    }
 }
