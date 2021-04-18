@@ -1,4 +1,4 @@
-### **VMK_Snake_1.1**
+### **JavaFXSnake1.0**
 The levels.txt file stores levels. Format:
 
 Level: 'current level'\
