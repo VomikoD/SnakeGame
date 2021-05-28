@@ -5,16 +5,18 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Sphere;
 import snake.model.Direction;
+import snake.model.Model;
 import snake.model.Position;
 import snake.model.exception.UnknownPositionException;
 import snake.model.level.Level;
 import snake.special.Settings;
+import static snake.special.GraphicsSettings.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Snake extends GameObject {
-    private List<GameObject> snakeParts;
+    protected List<GameObject> snakeParts;
     private Direction direction;
     public boolean isAlive;
 
@@ -53,7 +55,7 @@ public class Snake extends GameObject {
         snakeParts.remove(snakeParts.size() - 1);
     }
 
-    public int move(Level level) throws UnknownPositionException {
+    public int move(Level level, Model model) throws UnknownPositionException {
         List<Apple> apples = level.getGameObjects().getApples();
         List<Wall> walls = level.getGameObjects().getWalls();
         GameObject newHead = createNewHead();
@@ -101,9 +103,9 @@ public class Snake extends GameObject {
         List<Node> parts = new ArrayList<>();
         Color color;
         if(isAlive) {
-            color = Settings.COLOR_HEAD_SNAKE;
+            color = COLOR_HEAD_SNAKE;
         } else {
-            color = Settings.COLOR_HEAD_DEAD_SNAKE;
+            color = COLOR_HEAD_DEAD_SNAKE;
         }
 
         Sphere head = new Sphere(Settings.CELL_SIZE / 2);
@@ -133,9 +135,9 @@ public class Snake extends GameObject {
 //                                    Settings.CELL_SIZE / 2, color));
 
         if(isAlive) {
-            color = Settings.COLOR_BODY_SNAKE;
+            color = COLOR_BODY_SNAKE;
         } else {
-            color = Settings.COLOR_BODY_DEAD_SNAKE;
+            color = COLOR_BODY_DEAD_SNAKE;
         }
         for(int i = 1; i < snakeParts.size(); i++) {
             Sphere bodyElement = new Sphere(Settings.CELL_SIZE / 2);

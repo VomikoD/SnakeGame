@@ -7,6 +7,7 @@ import snake.model.Position;
 import snake.model.exception.UnknownPositionException;
 import snake.model.level.Level;
 import snake.special.*;
+import static snake.special.GraphicsSettings.*;
 
 import java.util.*;
 
@@ -24,8 +25,8 @@ public class Apple extends GameObject {
         PhongMaterial material = new PhongMaterial();
 //        Color diffuseColor = Settings.COLOR_APPLE;
 //        diffuseColor = Color.rgb((int) diffuseColor.getRed(), (int) diffuseColor.getGreen(), 255);
-        material.setDiffuseColor(Settings.COLOR_APPLE);
-        material.setSpecularColor(Settings.COLOR_APPLE);
+        material.setDiffuseColor(COLOR_APPLE);
+        material.setSpecularColor(COLOR_APPLE);
         sphere.setMaterial(material);
         return Collections.singletonList(sphere);
 

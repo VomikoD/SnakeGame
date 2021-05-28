@@ -1,35 +1,45 @@
 package snake;
 
-import javafx.application.Application                 ;
-import javafx.embed.swing.SwingNode;
-import javafx.scene.*                                 ;
-import javafx.scene.control.Alert                     ;
-import javafx.scene.control.Button                    ;
+import javafx.application.Application;
+import javafx.scene.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
-import javafx.scene.control.TextField                 ;
-import javafx.scene.input.KeyCode                     ;
-import javafx.scene.paint.Color                       ;
-import javafx.scene.text.Font                         ;
-import javafx.scene.text.FontWeight                   ;
-import javafx.scene.text.Text                         ;
-import javafx.stage.Stage                             ;
-import snake.model.*                                  ;
-import snake.model.exception.UnknownPositionException ;
-import snake.model.gameObjects.GameObject             ;
-import javax.swing.*                                  ;
-import static snake.special.LanguageProperties.*      ;
-import static snake.special.Settings.*                ;
-import java.awt.*                                     ;
-import java.io.*                                      ;
-import java.util.*                                    ;
-import java.util.List                                 ;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import snake.model.Direction;
+import snake.model.GamePosition;
+import snake.model.Model;
+import snake.model.exception.UnknownPositionException;
+import snake.model.gameObjects.GameObject;
+import snake.special.InterfaceSettings;
+
+import java.awt.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.function.Consumer;
+
+import static snake.special.LanguageSettings.*;
+import static snake.special.Settings.*;
+import static snake.special.GraphicsSettings.*;
 
 public class Main extends Application {
     private volatile Scene scene;
     private volatile Stage primaryStage;
     private volatile Model model;
     private volatile boolean isPlayingGame = false;
-    private Thread thread = new Thread(() -> {
+    public Thread thread = new Thread(() -> {
         while (true) {
             model.step();
 
@@ -67,7 +77,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        model = new Model();
+        model = new Model(this);
         primaryStage = stage;
         startScene(true);
 
@@ -91,31 +101,34 @@ public class Main extends Application {
         buttonForSettings.setOnMouseClicked(event -> startSettingsScene());
 
         if (isInit) {
-            scene = new Scene(new Group(buttonForStart, buttonForSettings));
-            scene.setFill(Color.ORANGE);
+            scene = new Scene(new Group());
+            scene.setFill(MAIN_MENU_COLOR);
             Camera camera = new PerspectiveCamera();
             scene.setCamera(camera);
             startKeyHandle();
-            return;
         }
 
-        draw(buttonForStart, buttonForSettings);
+        draw(buttonForSettings, buttonForStart);
     }
 
     private void startSettingsScene() {
         Button buttonGraphics = new Button(TEXT_FOR_BUTTON_TO_OPEN_GRAPHICS_SETTING);
-        buttonGraphics.setLayoutX(700);
+        buttonGraphics.setLayoutX(100);
         buttonGraphics.setFont(Font.font("Arial", FontWeight.BOLD, 200));
         buttonGraphics.setOnMouseClicked(event -> startGraphicsSetting());
 
+        Button buttonInterface = new Button(TEXT_FOR_BUTTON_TO_OPEN_INTERFACE_SETTING);
+        buttonInterface.setLayoutX(100);
+        buttonInterface.setLayoutY(400);
+        buttonInterface.setFont(Font.font("Arial", FontWeight.BOLD, 200));
+
         Button buttonToComplete = new Button(TEXT_FOR_BUTTON_TO_COMPLETE);
-        buttonToComplete.setLayoutX(750);
-        buttonToComplete.setLayoutY(900);
+        buttonToComplete.setLayoutX(1400);
         buttonToComplete.setFont(Font.font("Arial", FontWeight.BOLD, 200));
 
         buttonToComplete.setOnMouseClicked(event -> startScene(false));
 
-        draw(buttonGraphics, buttonToComplete);
+        draw(buttonGraphics, buttonToComplete, buttonInterface);
     }
 
     private void startGraphicsSetting() {
@@ -135,7 +148,7 @@ public class Main extends Application {
 
         Button buttonToComplete = new Button(TEXT_FOR_BUTTON_TO_COMPLETE);
         buttonToComplete.setLayoutX(750);
-        buttonToComplete.setLayoutY(900);
+        buttonToComplete.setLayoutY(700);
         buttonToComplete.setFont(Font.font("Arial", FontWeight.BOLD, 200));
 
         buttonToComplete.setOnMouseClicked(event -> startSettingsScene());
@@ -146,7 +159,7 @@ public class Main extends Application {
     private void setColor(String colorComponent) {
         Properties properties = new Properties();
         try {
-            properties.load(new FileInputStream(".\\res\\settings.properties"));
+            properties.load(new FileInputStream(".\\settings\\graphics.properties"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -169,7 +182,7 @@ public class Main extends Application {
 
             properties.setProperty(colorComponent, String.format("%06X", colorInt));
             try {
-                properties.store(new FileOutputStream(".\\res\\settings.properties"), null);
+                properties.store(new FileOutputStream(".\\settings\\graphics.properties"), null);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -178,7 +191,7 @@ public class Main extends Application {
         draw(colorPicker);
     }
 
-    private void startGame() {
+    public void startGame() {
         scene.setFill(GAME_BACKGROUND);
         isPlayingGame = true;
         model.init();
@@ -208,7 +221,6 @@ public class Main extends Application {
                 }
 
                 draw(nodes);
-
                 try {
                     Thread.sleep(DELAY_TIME_MILLIS);
                 } catch (InterruptedException interruptedException) {
@@ -251,7 +263,7 @@ public class Main extends Application {
         model.getSnake().setDirection(direction);
     }
 
-    private void restart() {
+    public void restart() {
         thread.stop();
         isPlayingGame = false;
         Button buttonToRestartGame = new Button(TEXT_FOR_BUTTON_TO_RESTART_LEVEL);
@@ -266,12 +278,34 @@ public class Main extends Application {
         buttonToRestartGame.setOnMouseClicked((event) -> startGame());
         buttonToGoToMainMenu.setOnMouseClicked((event) -> startScene(false));
 
-        scene.setFill(Color.ORANGE);
+        scene.setFill(MAIN_MENU_COLOR);
 
         draw(buttonToGoToMainMenu, buttonToRestartGame);
     }
 
     private void draw(Node... elements) {
-        scene.setRoot(new Group(elements));
+        Text textVO = new Text(50, 230, "VO");
+        textVO.setFont(Font.font("Arial", FontWeight.BOLD, InterfaceSettings.VOMIKOD_LABEL_FONT_SIZE));
+        textVO.setFill(Color.BLUE);
+        Text textMI = new Text(385, 230, "MI");
+        textMI.setFont(Font.font("Arial", FontWeight.BOLD, InterfaceSettings.VOMIKOD_LABEL_FONT_SIZE));
+        textMI.setFill(Color.RED);
+        Text textKO = new Text(650, 230, "KO");
+        textKO.setFont(Font.font("Arial", FontWeight.BOLD, InterfaceSettings.VOMIKOD_LABEL_FONT_SIZE));
+        textKO.setFill(Color.GREEN);
+        Text textD = new Text(1000, 230, "D");
+        textD.setFont(Font.font("Arial", FontWeight.BOLD, InterfaceSettings.VOMIKOD_LABEL_FONT_SIZE));
+        textD.setFill(Color.WHITE);
+
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+
+        Rectangle rect = new Rectangle(0, 0, dimension.width, 270);
+        rect.setFill(Color.BLACK);
+
+        Group group = new Group(elements);
+        group.getChildren().forEach(node -> node.setLayoutY(node.getLayoutY() + 270 + InterfaceSettings.DISTANCE_FROM_TOP_PANEL_TO_BOTTOM_PANEL));
+        group.getChildren().addAll(rect, textVO, textMI, textKO, textD);
+
+        scene.setRoot(group);
     }
 }

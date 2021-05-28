@@ -1,6 +1,7 @@
 package snake.model.level;
 
 import snake.model.Direction;
+import snake.model.Model;
 import snake.model.Position;
 import snake.model.exception.UnknownPositionException;
 import snake.model.gameObjects.*;
@@ -19,7 +20,7 @@ public class LevelLoader {
         this.file = file;
     }
 
-    public Level loadLevel(int level) {
+    public Level loadLevel(int level, Model model) {
         List<Apple> apples = new ArrayList<>();
         List<Wall> walls = new ArrayList<>();
         Snake snake = null;

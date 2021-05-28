@@ -6,6 +6,7 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import snake.model.Position;
 import snake.special.Settings;
+import static snake.special.GraphicsSettings.*;
 
 import java.util.*;
 
@@ -22,8 +23,8 @@ public class Wall extends GameObject {
         PhongMaterial material = new PhongMaterial();
 //        Color diffuseColor = Settings.COLOR_WALL;
 //        diffuseColor = Color.rgb((int) diffuseColor.getRed(), (int) diffuseColor.getGreen(), 255);
-        material.setDiffuseColor(Settings.COLOR_WALL);
-        material.setSpecularColor(Settings.COLOR_WALL);
+        material.setDiffuseColor(COLOR_WALL);
+        material.setSpecularColor(COLOR_WALL);
         box.setMaterial(material);
         return Collections.singletonList(box);
 //        return Collections.singletonList(new Circle(pos().getX() * Settings.CELL_SIZE,
